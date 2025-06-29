@@ -2,32 +2,40 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-const middleWare1 = (req, res, next) => {
-  console.log("middleware 1");
-  // res.json({msg: "middleware 1 run"})
-  next();
-};
+const todos = [
+  { id: 1, title: "Learn Node.js", completed: false },
+  { id: 2, title: "Learn Express", completed: false },
+  { id: 3, title: "Build a REST API", completed: false },
+];
 
-const middleWare2 = (req, res, next) => {
-  console.log("middleware 2");
-  res.json({ msg: "middleware 2 run" });
-  // next();
-};
+// console.log(express.json);
+// console.log(express.json());
 
-app.get("/", middleWare1, middleWare2);
+app.use(express.json());
+// Middleware to parse JSON bodies
 
-// app.get("/", middleWare2);
+app.use(express.urlencoded());
+// app.use(express.urlencoded({ extended: true }));
+// Middleware to parse URL-encoded bodies
 
-app.get("/", (req, res, next) => {
-  console.log("middleware 3");
-  // res.json({ msg: "middleware 3 run" });
-  next();
+app.post("/todos", (req, res) => {
+  // console.log(req.params);
+  // console.log(req.query);
+  console.log(req.body);
+  todos.push(req.body);
+  res.json({
+    message: "Todo created successfully",
+  });
 });
 
-app.use((req, res, next) => {
-  console.log("middleware 0");
-  res.json({ msg: "middleware 0 run" });
-  // next();
+app.get("/todos", (req, res) => {
+  res.json(todos);
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Not Found",
+  });
 });
 
 const port = process.env.PORT || 8000;
