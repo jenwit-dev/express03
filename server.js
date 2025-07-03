@@ -1,14 +1,18 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const axios = require("axios");
+
 const todos = [
   { id: 11, title: "Learn HTML" },
   { id: 22, title: "Learn CSS" },
   { id: 33, title: "Learn JS" },
 ];
+
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded()); // Middleware to parse URL-encoded bodies
 // On Thunder Client, GET http://localhost:8080/todos/11?_page=2&_limit=20
+
 app.get("/todos/:id", (req, res) => {
   const { id } = req.params;
   const { _page, _limit } = req.query;
@@ -26,6 +30,7 @@ app.get("/todos/:id", (req, res) => {
   todo._limit = _limit; // Adding query parameters to the todo object
   res.json(todo);
 });
+
 app.post("/todos/:id", (req, res) => {
   const { id } = req.params;
   const { title, num, age } = req.body;
@@ -36,6 +41,37 @@ app.post("/todos/:id", (req, res) => {
   todos.push({ ...req.body, id: parseInt(id, 10) });
   res.json(todos);
 });
+
+// On Thunder Client, Correct Path : GET "https://cataas.com/api/cats"
+app.get("/cat", (req, res, next) => {
+  axios
+    .get("https://cataas.com/api/qqq")
+    .then((result) => {
+      console.log(result); // object (axios response) ยังไม่ใช่ข้อมูลที่เราต้องการจริงๆ
+      console.log(result.data); // array (info we need to send to the client)
+      res.json(result.data);
+    })
+    // .catch((err) => {
+    //   // console.log(err.message);
+    //   next(err); // Pass the error to the error handling middleware
+    // });
+    .catch(next); // Pass the error to the error handling middleware (shorthand next with no parentheses, exclusive for only .then syntax, async await can't use shorthand next syntax like this)
+  // res.json({ msg: "This is a mock response" }); // This line is just for demonstration purposes
+  // This endpoint fetches a list of cats from the Cataas API
+  // and returns it as a JSON response.
+  // The Cataas API provides a list of cats with their details.
+});
+
+// On Thunder Client, Correct Path : GET "https://cataas.com/api/cats"
+// app.get("/cat", async (req, res, next) => {
+//   try {
+//     const result = await axios.get("https://cataas.com/api/qqq"); // incorrect path to demonstrate error handling
+//     console.log(result.data); // This will log the array of cats
+//     res.json(result.data); // Send the array of cats as a JSON response
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 // Solution 1: Using `find` method
 // app.put("/todos/:id", (req, res) => {
@@ -145,7 +181,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.log(err.message);
   res.status(500).json({
     message: "Internal Server Error",
   });
