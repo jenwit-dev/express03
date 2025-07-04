@@ -187,6 +187,32 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Example of a simple class in JavaScript
+// This class represents a Bicycle with a brand and color
+// It includes a method to simulate riding the bicycle
+// This is just a simple example to demonstrate how to create a class in JavaScript
+// Use keyword 'class' to define a class
+class Bicycle {
+  // Constructor method to initialize the Bicycle object with brand and color
+  // The constructor is a special method that is called when a new instance of the class is created
+  // It takes two parameters: brand and color
+  // These parameters are used to set the properties of the Bicycle object
+  // The properties are defined using the `this` keyword, which refers to the current instance
+  // of the class
+  constructor(brand, color) {
+    this.brand = brand;
+    this.color = color;
+  }
+  // Class method to simulate riding the bicycle
+  ride() {
+    console.log(`Riding a ${this.color} ${this.brand} bicycle!`);
+  }
+}
+
+// Example usage of the Bicycle class
+const myBike = new Bicycle("Trek", "red");
+myBike.ride(); // Output: Riding a red Trek bicycle!
+
 // Start the server
 const port = process.env.PORT || 8000;
 app.listen(port, () => console.log("server on port", port));
